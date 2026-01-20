@@ -21,10 +21,14 @@ func TxtToPdf(inputPath string, outputPath string) error {
 	defer file.Close()
 
 	lineHeight := 10.0
-	pageHeight := pdf.GetPageSizeStr()["h"]
-	bottomMargin := pdf.GetMargins().Bottom
+
+	_, pageHeight := pdf.GetPageSize()
+
+	_, bottomMargin := pdf.GetAutoPageBreak()
 
 	scanner := bufio.NewScanner(file)
+	scanner.Buffer(make([]byte, 1024), 1024*1024)
+
 	for scanner.Scan() {
 		if pdf.GetY()+lineHeight > pageHeight-bottomMargin {
 			pdf.AddPage()
